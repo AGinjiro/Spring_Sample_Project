@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.demo.form.BookForm;
+import com.example.demo.form.EditBookForm;
 import com.example.demo.model.Book;
 import com.example.demo.service.BookService;
 
@@ -65,7 +66,32 @@ public class BookController {
 	        return "redirect:/book-list";
 	    }
 	    
+	 // 編集画面を表示する
+	    @GetMapping("/book-edit")
+	    public String editBook(Model model, EditBookForm editBook) {
+	    		
+	        editBook = service.getOneBook(editBook.getId());
+	        model.addAttribute(editBook);
+	    		
+	        return "edit";
+	    }
 	    
+	 // 本の情報を更新する
+	    @PostMapping("/book-edit")
+	    public String update(@ModelAttribute @Validated EditBookForm editBook, BindingResult result, Model model) {
+	    		
+	        // バリデーションエラーの場合
+	        if (result.hasErrors()) {
+	            // 編集画面に遷移
+	            return "edit";
+	        }
+	    	
+	        // 本を更新する
+	        service.update(editBook);
+	        
+	     // 本の一覧画面にリダイレクト
+	        return "redirect:/book-list";
+	    }
 	    
 
 }
